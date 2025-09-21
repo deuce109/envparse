@@ -28,10 +28,3 @@ jobs:
 
     - name: Run tests with code coverage
       run: go test -v -coverprofile=coverage.out ./...
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v4
-      with:
-        # token: ${{ secrets.CODECOV_TOKEN }} # optional
-        files: ./coverage.out
-        fail_ci_if_error: true
