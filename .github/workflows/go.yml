@@ -1,0 +1,39 @@
+name: Go Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.22'
+
+    - name: Install dependencies
+      run: go mod download
+
+    - name: Load test environment variables
+      run: |
+        echo "Loading environment variables from testing.env"
+        grep -v '^//' testing.env | grep -v '^\s*$' | while IFS= read -r line; do
+          echo "$line" >> $GITHUB_ENV
+        done
+
+    - name: Run tests with coverage
+      run: go test -v -coverprofile=coverage.out ./...
+
+    # - name: Upload coverage to Codecov
+    #   uses: codecov/codecov-action@v4
+    #   with:
+    #     token: ${{ secrets.CODECOV_TOKEN }} # optional
+    #     files: ./coverage.out
+    #     fail_ci_if_error: true
